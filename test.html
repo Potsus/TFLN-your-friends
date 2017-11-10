@@ -1,0 +1,56 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+<script type='text/javascript'>
+
+    /*function getText(callback) {
+        $.ajax({
+            url: '/:6000',
+            data: {
+                bust:   new Date().getTime(),
+            },
+            dataType: 'text',
+            success: callback
+        });
+    }
+
+    getText(function(text) {
+        alert(text);
+    }); */
+
+
+    var texts = [];
+    function getText(callback) {
+
+        if(texts.length === 0) {
+            $.ajax({
+                url: '/api/secure-picture.php',
+                data: {
+                    url: 'http://www.kimonolabs.com/api/640xkp34?apikey=38c30756f7f07e7e3265cf3a1239e3bc&bust=' + new Date().getTime()
+                },
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data);
+                    var newTexts = data.results.collection1;
+
+                    for(var i=0; i<newTexts.length; i++) {
+                        texts.push(newTexts[i].text.text);
+                    }
+
+                    callback(texts.pop());
+                },
+                error: function() {
+                    console.log('err');
+                }
+            });
+        }
+        else {
+            callback(texts.pop());
+        }
+    }
+
+    getText(function(text) {
+        alert(text);
+    });
+
+</script>
+

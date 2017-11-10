@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+
+        <title>Friend Fukr</title>
+
+        <!-- Prevent Mobile Zooming -->
+        <meta content='True' name='HandheldFriendly' />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+
+        <!-- Windows 8 prevent tap highlight -->
+        <meta name="msapplication-tap-highlight" content="no"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script>
+
+            $(function(){
+                $('#people').change(function() {
+                    $('#number').val($(this).val());
+                });
+
+                $('#people').change();
+                
+                $('#carrier').change(function() {
+                    var address = $('#number').val();
+                    if(address.indexOf('@') != -1){
+                        $('#number').val(address.substr(0, address.indexOf('@'))+'@'+$(this).val());
+                    }
+                    else $('#number').val(address+'@'+$(this).val());
+                });
+                
+                
+
+                getText(function(text) {
+                    $('#message').html(text);
+                });
+                
+                $('#send').click(function(e) {
+                    $.post('https://develop.fastfig.com/api/newMail.php', { 
+                        to:         $('#number').val(),
+                        from:       $("#from").val(),
+                        fromName:       $("#fromName").val(),
+                        subject:    $("#fromName").val(), 
+                        message:    $('#message').html()
+                    });
+
+                    getText(function(text) {
+                        $('#message').html(text);
+                    });
+                });
+
+                $('#skip').click(function(e) {
+                    getText(function(text) {
+                        $('#message').html(text);
+                    });
+                })
+            });
+            
+            
+            var texts = [];
+            function getText(callback) {
+
+                if(texts.length === 0) {
+                    $.ajax({
+                        url: '/api/secure-picture.php',
+                        data: {
+                            url: 'http://www.kimonolabs.com/api/640xkp34?apikey=38c30756f7f07e7e3265cf3a1239e3bc&bust=' + new Date().getTime()
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            var newTexts = data.results.collection1;
+
+                            for(var i=0; i<newTexts.length; i++) {
+                                texts.push(newTexts[i].text.text);
+                            }
+
+                            callback(texts.pop());
+                        },
+                        error: function() {
+                            console.log('err');
+                        }
+                    });
+                }
+                else {
+                    callback(texts.pop());
+                }
+            }
+              
+        </script>
+
+        <style>
+            #send, #skip {
+                width: 49%;
+                height: 50px;
+                background: #0857FF;
+                border-radius: 3px;
+                border: 0;
+                color: white;
+                margin: 5px 0;
+            }
+        </style>
+    </head>
+    <body>
+
+        <select id='people'>
+        </select>
+        
+        <select id='carrier'>
+            <option value='vtext.com'>Verizon</option>
+            <option value='messaging.sprintpcs.com'>Sprint</option>
+            <option value='tmomail.net'>Tmobile</option>
+            <option value='txt.att.com'>AT&T</option>
+            <option value='vmobl.com'>Virgin</option>
+        </select>
+
+        To: <input type="text" id="number" style="width: 250px;"/>
+        <br />
+        From:<input type="text" id="fromName" value="Your Mom" />
+        <br />
+        From Address: <input type="text" id="from" value="butts@mailinator.com" />
+        <br />
+        Subject: <input type="text" id="subject" value="hi" />
+        <br />
+        <textarea id="message" style="width: 100%; height: 100px; display: block;"></textarea>
+
+        <button style="padding: 5px; " id="send">Send</button>
+        <button style="padding: 5px; " id="skip">Skip</button>
+    </body>
+</html>
