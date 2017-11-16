@@ -42,7 +42,7 @@
                 });
                 
                 $('#send').click(function(e) {
-                    $.post('https://develop.fastfig.com/api/newMail.php', { 
+                    $.post('newMail.php', { 
                         to:         $('#number').val(),
                         from:       $("#from").val(),
                         fromName:       $("#fromName").val(),
